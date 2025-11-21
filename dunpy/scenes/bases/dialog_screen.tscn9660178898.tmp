@@ -1,0 +1,132 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnov4qwaigitw"]
+
+[ext_resource type="FontFile" uid="uid://c7tj0ius2rpbw" path="res://addons/dunbPy/assets/fonts/Stack_Sans_Text/static/StackSansText-Medium.ttf" id="1_j84sg"]
+[ext_resource type="FontFile" uid="uid://wdsjdv5dlirp" path="res://addons/dunbPy/assets/fonts/Stack_Sans_Text/static/StackSansText-Regular.ttf" id="2_grlq0"]
+
+[sub_resource type="GDScript" id="GDScript_grlq0"]
+script/source = "extends Control
+
+var title: String
+var dialog: String
+@onready var titleLabel = %TitleLabel
+@onready var dialogLabel = %DialogLabel
+@onready var dunpy:DunpyManager = DunpyManager.new()
+
+var jsion = {
+  \"init_tree\": \"intro\",
+  
+  \"intro\": [
+	{
+	  \"type\": \"dialogue\",
+	  \"char\": \"Débora\",
+	  \"text\": \"Olá ${pause:0.6,delay:0.2,...} %user_name%\",
+	  \"event\": \"pose_0\",
+	  \"next\": \"dialogue_2\"
+	},
+	{
+	  \"id\": \"dialogue_2\",
+	  \"type\": \"dialogue\",
+	  \"char\": \"Débora\",
+	  \"text\": \"O que você vai fazer agora?\",
+	  \"next\": \"escolha_1\"
+	},
+	{
+	  \"id\": \"escolha_1\",
+	  \"type\": \"choice\",
+	  \"char\": \"Narrador\",
+	  \"choices\": [
+		{
+		  \"text\": \"Explorar a floresta\",
+		  \"next\": \"floresta_tree\"
+		},
+		{
+		  \"text\": \"Falar com o guarda\",
+		  \"next\": \"guarda_dialogue\"
+		}
+	  ],
+	  \"event\": \"update_ui_for_choices\"
+	}
+  ],
+  
+  \"guarda_dialogue\": [
+	{
+	  \"id\": \"guarda_dialogue\",
+	  \"type\": \"dialogue\",
+	  \"char\": \"Guarda\",
+	  \"text\": \"Não posso deixar você passar.\",
+	  \"next\": \"end_of_intro\"
+	},
+	{
+	  \"id\": \"end_of_intro\",
+	  \"type\": \"end\"
+	}
+  ],
+  
+  \"floresta_tree\": [
+	{
+	  \"type\": \"dialogue\",
+	  \"char\": \"Narrador\",
+	  \"text\": \"Você entra na floresta e encontra um mistério...\",
+	  \"next\": \"end_of_intro\"
+	}
+  ]
+}
+
+func _ready():
+	add_child(dunpy)
+	
+	# 3. Inicia
+	var json = jsion
+	var vars = {\"user_name\": \"Lucas\"}
+	dunpy.start_dialogue(json, vars)
+	dunpy.choices_requested.connect(choice)
+
+func _process(delta: float) -> void:
+	titleLabel.text = title
+	dialogLabel.text = dunpy.current_text_buffer
+	
+func choice(choices: Array) -> void:
+	dunpy.select_choice(0)
+
+	print(choices)
+"
+
+[node name="DialogScreen" type="Control" unique_id=1193175576]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_grlq0")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1625435880]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.7037037
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.20392157, 0.20392157, 0.20392157, 0.8666667)
+metadata/_edit_use_anchors_ = true
+
+[node name="TitleLabel" type="Label" parent="ColorRect" unique_id=782912524]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_right = 293.0
+offset_bottom = 34.0
+theme_override_fonts/font = ExtResource("1_j84sg")
+theme_override_font_sizes/font_size = 24
+text = "NOME DO PERSONAGEM"
+
+[node name="DialogLabel" type="Label" parent="ColorRect" unique_id=1272949767]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 32.0
+offset_right = 1144.0
+offset_bottom = 184.0
+theme_override_fonts/font = ExtResource("2_grlq0")
+autowrap_mode = 2

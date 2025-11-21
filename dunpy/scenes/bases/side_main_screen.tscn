@@ -1,0 +1,189 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4bhbs1gffaeo"]
+
+[ext_resource type="Script" uid="uid://c2d0bh0btihao" path="res://addons/dunpy/scripts/bases/side_main_screen.gd" id="1_yw3mk"]
+[ext_resource type="FontFile" uid="uid://cyrsexna8aq6n" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-SemiBold.ttf" id="2_0lqkn"]
+[ext_resource type="FontFile" uid="uid://c7tj0ius2rpbw" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-Medium.ttf" id="3_0lqkn"]
+
+[node name="SideMainScreen" type="Control" unique_id=1563561228]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yw3mk")
+panel_color = Color(0, 0, 0, 0.57254905)
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=543271137]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.22222222
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1160392642]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013888889
+anchor_top = 0.024691358
+anchor_right = 0.20833333
+anchor_bottom = 0.97530866
+theme_override_constants/separation = 20
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="NewGameButton" type="Button" parent="VBoxContainer" unique_id=1085773233]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0lqkn")
+theme_override_font_sizes/font_size = 24
+text = "New Game"
+flat = true
+alignment = 0
+
+[node name="LoadButton" type="Button" parent="VBoxContainer" unique_id=603363511]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0lqkn")
+theme_override_font_sizes/font_size = 24
+text = "Load"
+flat = true
+alignment = 0
+
+[node name="OptionButton" type="Button" parent="VBoxContainer" unique_id=842427638]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0lqkn")
+theme_override_font_sizes/font_size = 24
+text = "Options"
+flat = true
+alignment = 0
+
+[node name="AboutButton" type="Button" parent="VBoxContainer" unique_id=654981290]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0lqkn")
+theme_override_font_sizes/font_size = 24
+text = "About"
+flat = true
+alignment = 0
+
+[node name="HelpButton" type="Button" parent="VBoxContainer" unique_id=333118702]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0lqkn")
+theme_override_font_sizes/font_size = 24
+text = "Help"
+flat = true
+alignment = 0
+
+[node name="ExitButton" type="Button" parent="VBoxContainer" unique_id=546052841]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0lqkn")
+theme_override_font_sizes/font_size = 24
+text = "Exit"
+flat = true
+alignment = 0
+
+[node name="TitleLabel" type="Label" parent="." unique_id=1128677514]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013888889
+anchor_top = 0.037037037
+anchor_right = 0.38020834
+anchor_bottom = 0.1404321
+theme_override_fonts/font = ExtResource("3_0lqkn")
+theme_override_font_sizes/font_size = 48
+text = "My exemple game"
+metadata/_edit_use_anchors_ = true
+
+[node name="VersionTextLabel" type="Label" parent="." unique_id=1476086492]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -432.0
+offset_top = -80.0
+offset_right = -10.0
+offset_bottom = -13.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 16
+text = "Some message like version"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Window" type="Window" parent="." unique_id=1485344761]
+unique_name_in_owner = true
+transparent_bg = true
+oversampling_override = 1.0
+initial_position = 1
+size = Vector2i(384, 132)
+visible = false
+transient_to_focused = true
+exclusive = true
+unresizable = true
+borderless = true
+transparent = true
+
+[node name="Control" type="Control" parent="Window" unique_id=1713334817]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Window/Control" unique_id=696551095]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08627451, 0.08627451, 0.08627451, 0.28235295)
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window/Control" unique_id=1052370143]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Window/Control/VBoxContainer" unique_id=1139513124]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "SAIR DO JOGO?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="Window/Control/VBoxContainer" unique_id=756885791]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/Control/VBoxContainer" unique_id=1264586483]
+layout_mode = 2
+theme_override_constants/separation = 132
+alignment = 1
+
+[node name="ConfirmExit" type="Button" parent="Window/Control/VBoxContainer/HBoxContainer" unique_id=268828113]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+text = "SAIR"
+
+[node name="CancelExit" type="Button" parent="Window/Control/VBoxContainer/HBoxContainer" unique_id=297330216]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+text = "FICAR"
+
+[connection signal="pressed" from="VBoxContainer/NewGameButton" to="." method="on_pressed_new_game_button"]
+[connection signal="pressed" from="VBoxContainer/LoadButton" to="." method="_on_pressed_load_button"]
+[connection signal="pressed" from="VBoxContainer/OptionButton" to="." method="_on_pressed_options_button"]
+[connection signal="pressed" from="VBoxContainer/AboutButton" to="." method="_on_pressed_about_button"]
+[connection signal="pressed" from="VBoxContainer/HelpButton" to="." method="_on_pressed_help_button"]
+[connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="on_pressed_exit_button"]
+[connection signal="pressed" from="Window/Control/VBoxContainer/HBoxContainer/ConfirmExit" to="." method="_on_confirm_exit_pressed"]
+[connection signal="pressed" from="Window/Control/VBoxContainer/HBoxContainer/CancelExit" to="." method="_on_cancel_exit_pressed"]

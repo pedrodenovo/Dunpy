@@ -1,0 +1,134 @@
+[gd_scene load_steps=3 format=3 uid="uid://cforonimwx54h"]
+
+[ext_resource type="FontFile" uid="uid://cyrsexna8aq6n" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-SemiBold.ttf" id="1_vf2qu"]
+
+[sub_resource type="GDScript" id="GDScript_qxy8n"]
+script/source = "@tool
+extends Control
+
+@onready var graph_edit = $ColorRect/GraphEdit
+# Preload do seu nó criado no passo 4
+const DialogueNodeScene = preload(\"res://addons/dunpy_editor/scenes/dialogue_node.tscn\")
+
+func _ready():
+	# Conectar sinais do GraphEdit
+	graph_edit.connection_request.connect(_on_connection_request)
+	graph_edit.disconnection_request.connect(_on_disconnection_request)
+	
+	# Botões
+	$VBoxContainer/BtnAddNode.pressed.connect(_add_node)
+	$VBoxContainer/BtnSave.pressed.connect(_save_json)
+
+func _add_node():
+	var node = DialogueNodeScene.instantiate()
+	# Posição centralizada ou aleatória
+	node.position_offset = (graph_edit.scroll_offset + Vector2(100, 100))
+	# Gera um nome único para servir de ID
+	node.name = \"block_\" + str(Time.get_unix_time_from_system()).replace(\".\", \"\")
+	graph_edit.add_child(node)
+
+func _on_connection_request(from_node, from_port, to_node, to_port):
+	graph_edit.connect_node(from_node, from_port, to_node, to_port)
+
+func _on_disconnection_request(from_node, from_port, to_node, to_port):
+	graph_edit.disconnect_node(from_node, from_port, to_node, to_port)
+
+# ==============================================================
+#  EXPORTAR PARA JSON (ESTRUTURA DO DUNPY MANAGER)
+# ==============================================================
+func _save_json():
+	var output_data = {}
+	var connection_list = graph_edit.get_connection_list()
+	
+	# Vamos criar uma árvore chamada \"default_tree\" (ou pegar de um LineEdit)
+	var tree_blocks = []
+	
+	# Primeiro: Mapear conexões para saber quem aponta para quem
+	# Formato: { \"nome_do_node_pai\": \"nome_do_node_filho\" }
+	var next_map = {} 
+	for conn in connection_list:
+		next_map[conn[\"from_node\"]] = conn[\"to_node\"]
+
+	# Segundo: Iterar pelos nós e montar os dados
+	for child in graph_edit.get_children():
+		if child is GraphNode:
+			var node_data = child.get_data() # Pega texto e char do script do node
+			
+			# Adiciona campos obrigatórios de estrutura
+			node_data[\"id\"] = child.name # O nome do Node no Godot vira o ID
+			node_data[\"type\"] = \"dialogue\" # Simplificação
+			
+			# Descobre qual é o próximo baseado nas linhas conectadas
+			if next_map.has(child.name):
+				node_data[\"next\"] = next_map[child.name]
+			else:
+				node_data[\"type\"] = \"end\" # Se não conecta em nada, é fim
+			
+			tree_blocks.append(node_data)
+	
+	# Monta a estrutura final
+	# Aqui assumo que você vai ordenar os blocos ou usar IDs como eu sugeri no JSON anterior
+	# Mas para manter compatível com listas ordenadas, precisaríamos ordenar o array
+	# Como usamos IDs e \"next\", a ordem do array não importa tanto.
+	
+	output_data[\"init_tree\"] = \"story_start\"
+	output_data[\"story_start\"] = tree_blocks
+	
+	# Salvar Arquivo
+	var file = FileAccess.open(\"res://dialogues.json\", FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(output_data, \"\\t\"))
+		print(\"JSON Salvo com sucesso em res://dialogues.json\")
+		# Dica: No Godot Editor, vá em Project -> Reload Current Project se não aparecer
+	else:
+		printerr(\"Erro ao salvar arquivo.\")
+"
+
+[node name="MainScreen" type="Control" unique_id=1848486779]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_qxy8n")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1231679248]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1593731, 0.16065782, 0.17824763, 1)
+
+[node name="GraphEdit" type="GraphEdit" parent="ColorRect" unique_id=688404933]
+custom_minimum_size = Vector2(136.425, 0)
+layout_mode = 0
+anchor_left = 0.22222222
+anchor_right = 1.0069444
+anchor_bottom = 1.0
+size_flags_horizontal = 0
+size_flags_vertical = 3
+minimap_enabled = false
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=603611195]
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 648.0
+alignment = 1
+
+[node name="BtnAddNode" type="Button" parent="VBoxContainer" unique_id=547616667]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_vf2qu")
+text = "Add Node"
+flat = true
+alignment = 0
+
+[node name="BtnSave" type="Button" parent="VBoxContainer" unique_id=41675996]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_vf2qu")
+text = "Save"
+flat = true
+alignment = 0

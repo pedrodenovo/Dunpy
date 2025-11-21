@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3 uid="uid://cabjxy3dqsyld"]
+
+[sub_resource type="GDScript" id="GDScript_cm4sp"]
+script/source = "@tool
+extends GraphNode
+
+@onready var char_input = $Control/LineEdit
+@onready var text_input = $Control/TextEdit
+
+func _ready():
+	# Configura Slots (Input na esquerda, Output na direita)
+	# set_slot(index, enable_left, type_left, color_left, enable_right, type_right, color_right)
+	set_slot(0, true, 0, Color.WHITE, true, 0, Color.WHITE)
+	
+	title = name # O nome do node será o ID no JSON
+
+func get_data():
+	return {
+		\"char_name\": char_input.text,
+		\"text\": text_input.text
+		# O \"next\" será calculado pelo GraphEdit baseada nas conexões
+	}
+"
+
+[node name="GraphNode" type="GraphNode" unique_id=1426577307]
+offset_right = 256.0
+offset_bottom = 256.0
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = SubResource("GDScript_cm4sp")
+
+[node name="Control" type="Control" parent="." unique_id=2128640683]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+metadata/_edit_use_anchors_ = true
+
+[node name="LineEdit" type="LineEdit" parent="Control" unique_id=762579418]
+layout_mode = 0
+offset_left = -112.0
+offset_top = -111.0
+offset_right = 116.0
+offset_bottom = -80.0
+
+[node name="TextEdit" type="TextEdit" parent="Control" unique_id=476714700]
+layout_mode = 0
+offset_left = -112.0
+offset_top = -78.0
+offset_right = 116.0
+offset_bottom = 73.0
+
+[node name="LineEdit2" type="LineEdit" parent="Control" unique_id=1476995781]
+layout_mode = 0
+offset_left = -112.0
+offset_top = 81.0
+offset_right = 116.0
+offset_bottom = 112.0

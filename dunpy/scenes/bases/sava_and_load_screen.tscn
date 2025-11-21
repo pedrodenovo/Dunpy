@@ -1,0 +1,159 @@
+[gd_scene load_steps=6 format=3 uid="uid://duu5hukcpbnxr"]
+
+[ext_resource type="Texture2D" uid="uid://dcj2wqwm8u6gp" path="res://icon.svg" id="1_22sf1"]
+[ext_resource type="Script" uid="uid://x2txikof10vx" path="res://addons/dunpy/scripts/bases/sava_and_load_screen.gd" id="1_ypm1k"]
+[ext_resource type="FontFile" uid="uid://c7tj0ius2rpbw" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-Medium.ttf" id="2_bdvdp"]
+[ext_resource type="FontFile" uid="uid://cyrsexna8aq6n" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-SemiBold.ttf" id="3_ftqpv"]
+
+[sub_resource type="GDScript" id="GDScript_ypm1k"]
+script/source = "extends Control
+
+var title = \"title\"
+var date = \"00/00/0000 - 00:00:00\"
+
+func _ready() -> void:
+	$FileButton/TitleLabel.text = title
+	$FileButton/DateLabel.text = date
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="sava_and_load_screen" type="Control" unique_id=1245491498]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ypm1k")
+
+[node name="backcolor" type="ColorRect" parent="." unique_id=1115933537]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08468992, 0.08468992, 0.08468992, 1)
+
+[node name="VBoxButtons" type="VBoxContainer" parent="backcolor" unique_id=635642380]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013888889
+anchor_top = 0.024691358
+anchor_right = 0.20833333
+anchor_bottom = 0.97530866
+theme_override_constants/separation = 20
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="NewGameButton" type="Button" parent="backcolor/VBoxButtons" unique_id=1260105231]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ftqpv")
+theme_override_font_sizes/font_size = 24
+text = "SAVE"
+flat = true
+alignment = 0
+
+[node name="NewGameButton3" type="Button" parent="backcolor/VBoxButtons" unique_id=1795259863]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ftqpv")
+theme_override_font_sizes/font_size = 24
+text = "LOAD"
+flat = true
+alignment = 0
+
+[node name="NewGameButton2" type="Button" parent="backcolor/VBoxButtons" unique_id=222486953]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ftqpv")
+theme_override_font_sizes/font_size = 24
+text = "DELETE"
+flat = true
+alignment = 0
+
+[node name="TitleLabel" type="Label" parent="backcolor" unique_id=1700667686]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0069444445
+anchor_top = 0.012345679
+anchor_right = 0.22222222
+anchor_bottom = 0.11574074
+theme_override_fonts/font = ExtResource("2_bdvdp")
+theme_override_font_sizes/font_size = 32
+text = "LOAD AND SAVE"
+metadata/_edit_use_anchors_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="backcolor" unique_id=194869820]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.22916667
+anchor_top = 0.024691358
+anchor_right = 0.9861111
+anchor_bottom = 0.9506173
+grow_horizontal = 2
+horizontal_scroll_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="1" type="GridContainer" parent="backcolor/ScrollContainer" unique_id=123491141]
+custom_minimum_size = Vector2(872, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
+columns = 3
+
+[node name="base_nodes" type="Control" parent="." unique_id=647161595]
+layout_mode = 1
+anchor_left = 1.1111112
+anchor_right = 2.1111112
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="FileControl" type="Control" parent="base_nodes" unique_id=1868508564]
+custom_minimum_size = Vector2(296, 96)
+anchors_preset = 0
+script = SubResource("GDScript_ypm1k")
+
+[node name="FileButton" type="Button" parent="base_nodes/FileControl" unique_id=1580779976]
+custom_minimum_size = Vector2(128, 96)
+layout_mode = 0
+offset_left = 4.0
+offset_right = 132.0
+offset_bottom = 96.0
+icon = ExtResource("1_22sf1")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TitleLabel" type="Label" parent="base_nodes/FileControl/FileButton" unique_id=881223807]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 8.0
+offset_right = 300.0
+offset_bottom = 40.0
+text = "TITLE"
+clip_text = true
+
+[node name="DateLabel" type="Label" parent="base_nodes/FileControl/FileButton" unique_id=2094550280]
+layout_mode = 0
+offset_left = 124.0
+offset_top = 56.0
+offset_right = 300.0
+offset_bottom = 88.0
+text = "01/10/2025 - 12:52:01"
+clip_text = true
+
+[node name="GetSize" type="Control" parent="." unique_id=1896036596]
+layout_mode = 1
+anchor_left = 0.22222222
+anchor_top = 0.024691358
+anchor_right = 0.9861111
+anchor_bottom = 0.97530866
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true

@@ -1,0 +1,179 @@
+[gd_scene load_steps=5 format=3 uid="uid://dnov4qwaigitw"]
+
+[ext_resource type="FontFile" uid="uid://c7tj0ius2rpbw" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-Medium.ttf" id="1_j84sg"]
+[ext_resource type="FontFile" uid="uid://wdsjdv5dlirp" path="res://addons/dunpy/assets/fonts/Stack_Sans_Text/static/StackSansText-Regular.ttf" id="2_grlq0"]
+
+[sub_resource type="GDScript" id="GDScript_grlq0"]
+script/source = "class_name DialogScreen
+extends Control
+
+@export_file(\"*.json\") var json_dialog_file_path: String = \"\"
+
+@onready var titleLabel: Label = %TitleLabel
+@onready var dialogLabel: Label = %DialogLabel # Recomendado RichTextLabel para efeitos
+@onready var choicesContainer: Container = $PanelContainer/VBoxContainer
+@onready var choiceBaseButton: Button = %choiceBaseButton
+@onready var dunpy: DunpyManager = DunpyManager.new()
+
+# JSON de fallback/teste
+var json_dialog_fallback = {\"init_tree\":\"intro\",\"intro\":[{\"type\":\"dialogue\",\"char_name\":\"Débora\",\"text\":\"Olá ${pause:0.6,delay:0.2,...} %user_name%\",\"event\":\"pose_0\",\"next\":\"dialogue_2\"},{\"id\":\"dialogue_2\",\"type\":\"dialogue\",\"char_name\":\"Narrador\",\"text\":\"O que você vai fazer agora?\",\"next\":\"escolha_1\"},{\"id\":\"escolha_1\",\"type\":\"choice\",\"char_name\":\"Narrador\",\"choices\":[{\"text\":\"Explorar a floresta\",\"change_tree\":\"floresta_tree\"},{\"text\":\"Falar com o guarda\",\"change_tree\":\"guarda_dialogue\"}]}],\"guarda_dialogue\":[{\"id\":\"guarda_dialogue\",\"type\":\"dialogue\",\"char_name\":\"Guarda\",\"text\":\"Não posso deixar você passar.\",\"next\":\"end_of_intro\"}],\"floresta_tree\":[{\"type\":\"dialogue\",\"char_name\":\"Narrador\",\"text\":\"Você entra na floresta e encontra um mistério...\",\"next\":\"end_of_intro\"}]}
+var vars = { \"user_name\": \"Jogador\" } # Variável padrão para teste
+
+func _ready():
+	self.hide()
+	# Garante que o botão template não apareça
+	choiceBaseButton.hide()
+	
+	add_child(dunpy)
+	
+	# Conexões
+	dunpy.dialogue_started.connect(func(): self.show())
+	dunpy.choices_requested.connect(display_choices)
+	dunpy.name_updated.connect(func(t): titleLabel.text = t)
+	dunpy.text_updated.connect(func(t): dialogLabel.text = t)
+	dunpy.dialogue_finished.connect(finish_dialogue)
+	start_dialogue()
+
+func start_dialogue():
+	var data_to_load = json_dialog_fallback
+	
+	# Lógica de carregar arquivo real
+	if json_dialog_file_path != \"\":
+		if FileAccess.file_exists(json_dialog_file_path):
+			var file = FileAccess.open(json_dialog_file_path, FileAccess.READ)
+			var content = file.get_as_text()
+			var json = JSON.new()
+			if json.parse(content) == OK:
+				data_to_load = json.data
+			else:
+				push_error(\"Erro ao ler JSON: \" + json.get_error_message())
+		else:
+			push_warning(\"Arquivo não encontrado, usando fallback.\")
+
+	dunpy.start_dialogue(data_to_load, vars)
+
+# --- Lógica de Escolhas ---
+
+func display_choices(choices: Array) -> void:
+	_clear_choice_buttons()
+	
+	for i in range(choices.size()):
+		var btn = choiceBaseButton.duplicate()
+		btn.text = choices[i].text
+		btn.show() # Importante pois o original está hide()
+		# Bind passa o índice (i) como argumento extra automaticamente
+		btn.pressed.connect(_on_choice_pressed.bind(i))
+		choicesContainer.add_child(btn)
+
+func _on_choice_pressed(index: int):
+	dunpy.select_choice(index)
+	_clear_choice_buttons()
+
+func _clear_choice_buttons():
+	for child in choicesContainer.get_children():
+		# Não deleta o template original!
+		if child != choiceBaseButton:
+			child.queue_free()
+
+func finish_dialogue():
+	self.queue_free()
+	# mas hide() permite reutilizar a instância.
+
+func _on_diloag_button_pressed() -> void:
+	if dunpy.is_typing == false:
+		dunpy.next_requested = true
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grlq0"]
+
+[node name="DialogScreen" type="Control" unique_id=1193175576]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_grlq0")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1625435880]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.7037037
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_default_cursor_shape = 2
+color = Color(0.20392157, 0.20392157, 0.20392157, 0.8666667)
+metadata/_edit_use_anchors_ = true
+
+[node name="TitleLabel" type="Label" parent="ColorRect" unique_id=782912524]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_right = 293.0
+offset_bottom = 34.0
+theme_override_fonts/font = ExtResource("1_j84sg")
+theme_override_font_sizes/font_size = 24
+text = "NOME DO PERSONAGEM"
+
+[node name="DialogLabel" type="Label" parent="ColorRect" unique_id=1272949767]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 32.0
+offset_right = 1144.0
+offset_bottom = 184.0
+mouse_filter = 0
+mouse_behavior_recursive = 1
+mouse_force_pass_scroll_events = false
+mouse_default_cursor_shape = 2
+theme_override_fonts/font = ExtResource("2_grlq0")
+autowrap_mode = 2
+
+[node name="DiloagButton" type="Button" parent="." unique_id=280440624]
+z_index = 90
+z_as_relative = false
+layout_mode = 0
+anchor_top = 0.7037037
+anchor_right = 1.0
+anchor_bottom = 1.0
+action_mode = 0
+flat = true
+metadata/_edit_use_anchors_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1333412341]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.99300003
+anchor_top = 0.69100004
+anchor_right = 0.99300003
+anchor_bottom = 0.69100004
+offset_left = -183.93604
+offset_top = -30.768036
+offset_right = 0.063964844
+offset_bottom = 0.23196411
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_grlq0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1829881077]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="." unique_id=32880391]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="choiceBaseButton" type="Button" parent="Control" unique_id=639553112]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1384.0
+offset_top = 32.0
+offset_right = 1467.0
+offset_bottom = 63.0
+text = "ESOLHA 1"
+alignment = 2
+
+[connection signal="gui_input" from="ColorRect" to="." method="_on_gui_input"]
+[connection signal="pressed" from="DiloagButton" to="." method="_on_diloag_button_pressed"]
